@@ -11,4 +11,4 @@ before_script:
 - ./configure --enable-xfile
 - make
 script:
-- scripts/test_all.sh
+- make test
