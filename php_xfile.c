@@ -923,7 +923,7 @@ PHP_FUNCTION(xfile_paths_prepend)
         RETURN_FALSE;
     }
 
-    if ( str_prepend_len == 0 )
+    if (str_prepend_len == 0)
         RETURN_FALSE;
 
     zarr_hash = Z_ARRVAL_P(zarr);
@@ -939,25 +939,41 @@ PHP_FUNCTION(xfile_paths_prepend)
         return;
     }
 
+    while (str_prepend[str_prepend_len - 1] == DEFAULT_SLASH) {
+        str_prepend_len--;
+    }
+
     array_init(return_value);
     for(zend_hash_internal_pointer_reset_ex(zarr_hash, &pointer); 
             zend_hash_get_current_data_ex(zarr_hash, (void**) &entry_data, &pointer) == SUCCESS; 
             zend_hash_move_forward_ex(zarr_hash, &pointer)) 
     {
-        if ( Z_TYPE_PP(entry_data) == IS_STRING ) {
+        if (Z_TYPE_PP(entry_data) == IS_STRING) {
             str = Z_STRVAL_PP(entry_data);
             str_len = Z_STRLEN_PP(entry_data);
 
-            newpath = path_concat(str_prepend, str_prepend_len, str, str_len TSRMLS_CC);
-            newpath_len = strlen(newpath);
+            if (str_len == 0) {
+                continue;
+            }
 
-            if ( modify ) {
+            while (*str == DEFAULT_SLASH) {
+                str++;
+                str_len--;
+            }
+
+            smart_str implstr = {0};
+            smart_str_appendl(&implstr, str_prepend, str_prepend_len);
+            smart_str_appendc(&implstr, DEFAULT_SLASH);
+            smart_str_appendl(&implstr, str, str_len);
+            smart_str_0(&implstr);
+
+            if (modify) {
                 // free up the previous string
                 efree(Z_STRVAL_PP(entry_data));
-                Z_STRVAL_PP(entry_data) = newpath;
-                Z_STRLEN_PP(entry_data) = newpath_len;
+                Z_STRVAL_PP(entry_data) = implstr.c;
+                Z_STRLEN_PP(entry_data) = implstr.len;
             } else {
-                add_next_index_stringl(return_value, newpath, newpath_len, 0);
+                add_next_index_stringl(return_value, implstr.c, implstr.len, 0);
             }
         }
     }
