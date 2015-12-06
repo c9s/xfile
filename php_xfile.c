@@ -3,6 +3,7 @@
 #include "path.h"
 #include "zend_alloc.h"
 #include <string.h>
+#include <standard/php_smart_str.h>
 
 #ifdef HAVE_WCHAR_H
 # include <wchar.h>
@@ -775,6 +776,11 @@ PHP_FUNCTION(xfile_paths_append)
         return;
     }
 
+    while (*str_append == DEFAULT_SLASH) {
+        str_append++;
+        str_append_len--;
+    }
+
     array_init(return_value);
 
     for(zend_hash_internal_pointer_reset_ex(zarr_hash, &pointer); 
@@ -785,16 +791,25 @@ PHP_FUNCTION(xfile_paths_append)
             str = Z_STRVAL_PP(entry_data);
             str_len = Z_STRLEN_PP(entry_data);
 
-            newpath = path_concat(str, str_len, str_append, str_append_len TSRMLS_CC);
-            newpath_len = strlen(newpath);
+            while (str[str_len - 1] == DEFAULT_SLASH) {
+                str_len--;
+            }
+            smart_str implstr = {0};
+            smart_str_appendl(&implstr, str, str_len);
+            smart_str_appendc(&implstr, DEFAULT_SLASH);
+            smart_str_appendl(&implstr, str_append, str_append_len);
+            smart_str_0(&implstr);
+
+            // newpath = path_concat(str, str_len, str_append, str_append_len TSRMLS_CC);
+            // newpath_len = strlen(newpath);
 
             if (modify) {
                 // free up the previous string
                 efree(Z_STRVAL_PP(entry_data));
-                Z_STRVAL_PP(entry_data) = newpath;
-                Z_STRLEN_PP(entry_data) = newpath_len;
+                Z_STRVAL_PP(entry_data) = implstr.c;
+                Z_STRLEN_PP(entry_data) = implstr.len;
             } else {
-                add_next_index_stringl(return_value, newpath, newpath_len, 0);
+                add_next_index_stringl(return_value, implstr.c, implstr.len, 0);
             }
         }
     }
@@ -836,15 +851,12 @@ PHP_FUNCTION(xfile_paths_remove_basepath)
         if (zarr_count == 0) {
             RETURN_FALSE;
         }
-    } else {
-        array_init(return_value);
-        zval_copy_ctor(return_value);
-        if ( zarr_count == 0 ) {
-            return;
-        }
+    }
+    if ( zarr_count == 0 ) {
+        return;
     }
 
-
+    array_init(return_value);
 
     // append DEFAULT_SLASH to basepath
     /*
@@ -918,7 +930,7 @@ PHP_FUNCTION(xfile_paths_prepend)
     zarr_count = zend_hash_num_elements(zarr_hash);
 
 
-    if ( modify ) {
+    if (modify) {
         if (zarr_count == 0) {
             RETURN_FALSE;
         }

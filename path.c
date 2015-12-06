@@ -10,16 +10,13 @@
 char * path_concat( char* path1, int len1, char * path2, int len2 TSRMLS_DC) 
 {
     smart_str implstr = {0};
-
     while (path1[len1-1] == DEFAULT_SLASH) {
         len1--;
     }
-
     while (*path2 == DEFAULT_SLASH) {
         path2++;
         len2--;
     }
-
     smart_str_appendl(&implstr, path1, len1);
     smart_str_appendc(&implstr, DEFAULT_SLASH);
     smart_str_appendl(&implstr, path2, len2);
