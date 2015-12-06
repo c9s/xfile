@@ -2,11 +2,18 @@
 test xfile scanpath
 --FILE--
 <?php
-$paths = xfile_scanpath('modules');
-print_r($paths);
+@mkdir('tmp', 0755);
+touch('tmp/1');
+touch('tmp/2');
+touch('tmp/foo');
+touch('tmp/bar');
+$paths = xfile_scanpath('tmp');
+var_export($paths);
+xfile_rmtree('tmp');
 --EXPECT--
-Array
-(
-    [0] => modules/xfile.la
-    [1] => modules/xfile.so
+array (
+  0 => 'tmp/1',
+  1 => 'tmp/2',
+  2 => 'tmp/bar',
+  3 => 'tmp/foo',
 )

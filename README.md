@@ -32,10 +32,10 @@ $path = xfile_pathjoin("etc","folder","file1");
 $subpaths  = xfile_pathsplit("etc/folder/file1");
 
 // replace current extension with another extension.
-$newFilename = xfile_replace_extension("manifest.yml","json"); // Returns manifest.json
+$newFilename = xfile_ext_replace("manifest.yml","json"); // Returns manifest.json
 
 // get extension from the filename.
-$extension = xfile_get_extension("manifest.yml");   // Returns "yml"
+$extension = xfile_ext("manifest.yml");   // Returns "yml"
 
 // copy file if the mtime of source is newer than the mtime of destination.
 xfile_copy_if_newer("source_file","target_file");
