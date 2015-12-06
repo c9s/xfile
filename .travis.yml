@@ -11,8 +11,7 @@ env:
 before_script:
 - phpenv rehash
 - curl -O https://raw.github.com/c9s/Onion/master/onion
+script:
 - phpize
 - ./configure --enable-xfile
-- make
-script:
 - make test
