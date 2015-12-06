@@ -7,7 +7,6 @@ php:
 before_script:
 - phpenv rehash
 - curl -O https://raw.github.com/c9s/Onion/master/onion
-- composer install
 - phpize
 - ./configure --enable-xfile
 - make
