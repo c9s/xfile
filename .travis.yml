@@ -1,4 +1,8 @@
 language: php
+
+compiler:
+- gcc
+
 php:
 - 5.3
 - 5.4
