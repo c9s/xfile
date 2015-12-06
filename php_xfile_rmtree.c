@@ -169,7 +169,7 @@ zval *recursive_iterator_iterator_create(zval * iter, long options TSRMLS_DC)
 
 
 
-PHP_FUNCTION(rmtree)
+PHP_FUNCTION(xfile_rmtree)
 {
     char *dir;
     int  dir_len;

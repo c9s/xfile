@@ -54,7 +54,7 @@ static const zend_function_entry xfile_functions[] = {
     PHP_FE(mkdir_if_not_exists, NULL)
     PHP_FE(copy_if_not_exists, NULL)
     PHP_FE(copy_if_newer, NULL)
-    PHP_FE(rmtree, NULL)
+    PHP_FE(xfile_rmtree, NULL)
     PHP_FE(xfile_ext_replace, NULL)
     PHP_FE(xfile_ext, NULL)
     PHP_FE(xfile_prettysize, NULL)

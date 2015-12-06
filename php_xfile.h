@@ -68,7 +68,7 @@ PHP_FUNCTION(rmdir_if_exists);
 PHP_FUNCTION(mkdir_if_not_exists);
 PHP_FUNCTION(copy_if_not_exists);
 PHP_FUNCTION(copy_if_newer);
-PHP_FUNCTION(rmtree);
+PHP_FUNCTION(xfile_rmtree);
 PHP_FUNCTION(xfile_ext_replace);
 PHP_FUNCTION(xfile_ext);
 PHP_FUNCTION(xfile_prettysize);
