@@ -207,7 +207,7 @@ void phpdir_scandir_with_handler(
 
 
 
-PHP_FUNCTION(scanpath_dir)
+PHP_FUNCTION(xfile_scanpath_dir)
 {
     char *dirname;
     int dirname_len;
