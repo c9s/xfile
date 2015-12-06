@@ -52,14 +52,14 @@ PHP_FUNCTION(xfile_scanpath_dir);
 PHP_FUNCTION(xfile_pathjoin);
 PHP_FUNCTION(xfile_pathsplit);
 
-PHP_FUNCTION(paths_append);
-PHP_FUNCTION(paths_prepend);
-PHP_FUNCTION(paths_remove_basepath);
-PHP_FUNCTION(paths_filter_dir);
-PHP_FUNCTION(paths_filter_file);
+PHP_FUNCTION(xfile_paths_append);
+PHP_FUNCTION(xfile_paths_prepend);
+PHP_FUNCTION(xfile_paths_remove_basepath);
+PHP_FUNCTION(xfile_paths_filter_dir);
+PHP_FUNCTION(xfile_paths_filter_file);
 
-PHP_FUNCTION(paths_lastmtime);
-PHP_FUNCTION(paths_lastctime);
+PHP_FUNCTION(xfile_paths_lastmtime);
+PHP_FUNCTION(xfile_paths_lastctime);
 PHP_FUNCTION(xfile_mtime_compare);
 PHP_FUNCTION(xfile_ctime_compare);
 

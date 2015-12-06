@@ -5,43 +5,28 @@
 #include <Zend/zend.h>
 #include <ext/standard/php_standard.h>
 #include <ext/standard/php_filestat.h>
-
+#include <standard/php_smart_str.h>
 
 char * path_concat( char* path1, int len1, char * path2, int len2 TSRMLS_DC) 
 {
-    char * newpath = emalloc( sizeof(char) * (len1 + len2 + 2) );
-    char * src = path1;
-    char * p2 = newpath;
-    while( len1-- ) {
-        *p2 = *src;
-        p2++;
-        src++;
+    smart_str implstr = {0};
+
+    while (path1[len1-1] == '/') {
+        len1--;
     }
 
-    // do nothing if the last char is a path slash
-    if ( p2 > path1 && *(p2-1) == DEFAULT_SLASH ) {
-
-    } else {
-        // if there is no path slash at the end of string, 
-        // append one.
-        *p2 = DEFAULT_SLASH;
-        p2++;
+    while (*path2 == '/') {
+        path2++;
+        len2--;
     }
 
-    // concat the path2 string
-    src = path2;
-
-    if ( *src == DEFAULT_SLASH ) {
-        src++;
-    }
-
-    while( len2-- ) {
-        *p2 = *src;
-        src++;
-        p2++;
-    }
-    *p2 = '\0';
-    return newpath;
+    smart_str_appendl(&implstr, path1, len1);
+    smart_str_appendc(&implstr, '/');
+    smart_str_appendl(&implstr, path2, len2);
+    smart_str_0(&implstr);
+    char * str = implstr.c;
+    // smart_str_free(&implstr);
+    return str;
 }
 
 void path_remove_tailing_slash(char *path TSRMLS_DC)

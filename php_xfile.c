@@ -31,13 +31,13 @@ static const zend_function_entry xfile_functions[] = {
     PHP_FE(xfile_findbin, NULL)
     PHP_FE(xfile_pathjoin, NULL)
     PHP_FE(xfile_pathsplit, NULL)
-    PHP_FE(paths_append, NULL)
-    PHP_FE(paths_prepend, NULL)
-    PHP_FE(paths_remove_basepath, NULL)
-    PHP_FE(paths_filter_dir, NULL)
-    PHP_FE(paths_filter_file, NULL)
-    PHP_FE(paths_lastmtime, arginfo_lastmtime)
-    PHP_FE(paths_lastctime, arginfo_lastctime)
+    PHP_FE(xfile_paths_append, NULL)
+    PHP_FE(xfile_paths_prepend, NULL)
+    PHP_FE(xfile_paths_remove_basepath, NULL)
+    PHP_FE(xfile_paths_filter_dir, NULL)
+    PHP_FE(xfile_paths_filter_file, NULL)
+    PHP_FE(xfile_paths_lastmtime, arginfo_lastmtime)
+    PHP_FE(xfile_paths_lastctime, arginfo_lastctime)
     PHP_FE(xfile_mtime_compare, NULL)
     PHP_FE(xfile_ctime_compare, NULL)
     PHP_FE(unlink_if_exists, NULL)
@@ -277,15 +277,12 @@ PHP_FUNCTION(xfile_scanpath)
     stream->flags |= PHP_STREAM_FLAG_NO_FCLOSE;
 
     array_init(return_value);
-
     phpdir_scandir_with_handler(
             return_value, 
             stream,
             dirname, dirname_len, 
             dir_entry_handler TSRMLS_CC);
-
     php_stream_close(stream);
-    zval_copy_ctor(return_value);
 }
 
 
@@ -355,7 +352,7 @@ PHP_FUNCTION(xfile_mtime_compare)
 
 
 
-PHP_FUNCTION(paths_lastctime)
+PHP_FUNCTION(xfile_paths_lastctime)
 {
     zval *zarr;
     zval **entry_data;
@@ -401,7 +398,7 @@ PHP_FUNCTION(paths_lastctime)
 
 
 
-PHP_FUNCTION(paths_lastmtime)
+PHP_FUNCTION(xfile_paths_lastmtime)
 {
     zval *zarr;
 
@@ -649,7 +646,7 @@ PHP_FUNCTION(unlink_if_exists)
 
 
 /* filter out dir from paths  */
-PHP_FUNCTION(paths_filter_dir)
+PHP_FUNCTION(xfile_paths_filter_dir)
 {
     zval *zarr;
     zval **entry_data;
@@ -686,7 +683,7 @@ PHP_FUNCTION(paths_filter_dir)
 
 
 /* filter out dir from paths  */
-PHP_FUNCTION(paths_filter_file)
+PHP_FUNCTION(xfile_paths_filter_file)
 {
     zval *zarr;
     zval **entry_data;
@@ -725,7 +722,7 @@ PHP_FUNCTION(paths_filter_file)
 
 
 
-PHP_FUNCTION(paths_append)
+PHP_FUNCTION(xfile_paths_append)
 {
     zval *zarr;
 
@@ -779,7 +776,7 @@ PHP_FUNCTION(paths_append)
             newpath = path_concat(str, str_len, str_append, str_append_len TSRMLS_CC);
             newpath_len = strlen(newpath);
 
-            if ( modify ) {
+            if (modify) {
                 // free up the previous string
                 efree(Z_STRVAL_PP(entry_data));
                 Z_STRVAL_PP(entry_data) = newpath;
@@ -792,7 +789,7 @@ PHP_FUNCTION(paths_append)
 }
 
 
-PHP_FUNCTION(paths_remove_basepath)
+PHP_FUNCTION(xfile_paths_remove_basepath)
 {
     zval *zarr;
 
@@ -877,7 +874,7 @@ PHP_FUNCTION(paths_remove_basepath)
 
 
 
-PHP_FUNCTION(paths_prepend)
+PHP_FUNCTION(xfile_paths_prepend)
 {
     zval *zarr;
 
