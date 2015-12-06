@@ -8,7 +8,6 @@
 # include <wchar.h>
 #endif
 
-
 ZEND_BEGIN_ARG_INFO_EX(arginfo_scanpath, 0, 0, 1)
     ZEND_ARG_INFO(0, dir)
 ZEND_END_ARG_INFO()
@@ -25,12 +24,22 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_lastctime, 0, 0, 1)
     ZEND_ARG_INFO(0, filelist)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_pathsplit, 0, 0, 1)
+    ZEND_ARG_INFO(0, path string)
+    ZEND_ARG_INFO(0, max split)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_pathjoin, 0, 0, 1)
+    // pass_by_ref, name, allow_null
+    ZEND_ARG_ARRAY_INFO(0, path array, 0)
+ZEND_END_ARG_INFO()
+
 static const zend_function_entry xfile_functions[] = {
     PHP_FE(xfile_scanpath, arginfo_scanpath)
     PHP_FE(xfile_scanpath_dir, arginfo_scanpath_dir)
     PHP_FE(xfile_findbin, NULL)
     PHP_FE(xfile_pathjoin, NULL)
-    PHP_FE(xfile_pathsplit, NULL)
+    PHP_FE(xfile_pathsplit, arginfo_pathsplit)
     PHP_FE(xfile_paths_append, NULL)
     PHP_FE(xfile_paths_prepend, NULL)
     PHP_FE(xfile_paths_remove_basepath, NULL)
@@ -398,6 +407,8 @@ PHP_FUNCTION(xfile_paths_lastctime)
 
 
 
+/* {{{ proto long xfile_paths_lastmtime(array &array_files)
+   Return the last modification time in the file array. */
 PHP_FUNCTION(xfile_paths_lastmtime)
 {
     zval *zarr;
@@ -446,8 +457,12 @@ PHP_FUNCTION(xfile_paths_lastmtime)
     }
     RETURN_LONG(lastmtime);
 }
+/* }}} */
 
 
+
+/* {{{ proto array xfile_pathsplit(array &array_files)
+   Split the path */
 PHP_FUNCTION(xfile_pathsplit)
 {
     char *path;
@@ -456,8 +471,10 @@ PHP_FUNCTION(xfile_pathsplit)
     zval zdelim;
     zval zstr;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s",
-                    &path, &path_len
+    long max_split = LONG_MAX;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l",
+                    &path, &path_len, &max_split
                     ) == FAILURE) {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Wrong parameters.");
         RETURN_FALSE;
@@ -476,7 +493,7 @@ PHP_FUNCTION(xfile_pathsplit)
     ZVAL_STRINGL(&zdelim, delim_str, 1, 0);
 
     // PHPAPI void php_explode(zval *delim, zval *str, zval *return_value, long limit)
-    php_explode(&zdelim, &zstr, return_value, LONG_MAX); // LONG_MAX means no limit
+    php_explode(&zdelim, &zstr, return_value, max_split); // LONG_MAX means no limit
 }
 
 PHP_FUNCTION(copy_if_newer)
