@@ -8,6 +8,7 @@ touch('tmp/2');
 touch('tmp/foo');
 touch('tmp/bar');
 $paths = xfile_scanpath('tmp');
+asort($paths);
 var_export($paths);
 xfile_rmtree('tmp');
 --EXPECT--
