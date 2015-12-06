@@ -79,12 +79,6 @@ PHP_FUNCTION(xfile_files_get_contents_array);
 #define false 0
 #define true 1
 
-zend_bool file_exists(char * filename, int filename_len TSRMLS_DC);
-zend_bool stream_is_dir(php_stream *stream TSRMLS_DC);
-zend_bool is_dir(char* dirname, int dirname_len TSRMLS_DC);
-zend_bool is_file(char* dirname, int dirname_len TSRMLS_DC);
-
-zend_bool unlink_file(char *filename, int filename_len, zval *zcontext TSRMLS_DC);
 
 extern zend_module_entry xfile_module_entry;
 #define phpext_xfile_ptr &xfile_module_entry
@@ -92,5 +86,12 @@ extern zend_module_entry xfile_module_entry;
 #define SIZE_KB (unsigned long)(1024)
 #define SIZE_MB (unsigned long)(1024 * 1024)
 #define SIZE_GB (unsigned long)(1024 * 1024 * 1024)
+
+zend_bool file_exists(char * filename, int filename_len TSRMLS_DC);
+zend_bool stream_is_dir(php_stream *stream TSRMLS_DC);
+zend_bool is_dir(char* dirname, int dirname_len TSRMLS_DC);
+zend_bool is_file(char* dirname, int dirname_len TSRMLS_DC);
+zend_bool unlink_file(char *filename, int filename_len, zval *zcontext TSRMLS_DC);
+
 
 #endif

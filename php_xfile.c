@@ -8,6 +8,7 @@
 # include <wchar.h>
 #endif
 
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_scanpath, 0, 0, 1)
     ZEND_ARG_INFO(0, dir)
 ZEND_END_ARG_INFO()
