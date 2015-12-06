@@ -1,7 +1,7 @@
 xfile
 ===============
 
-[![Build Status](https://travis-ci.org/c9s/xfile.png?branch=master)](https://travis-ci.org/c9s/xfile)
+[![Build Status](https://travis-ci.org/c9s/xfile.svg?branch=master)](https://travis-ci.org/c9s/xfile)
 
 Fast File Utility Extension (with pure PHP implementation support)
 
