@@ -15,7 +15,12 @@ git clone https://github.com/c9s/xfile.git
 cd xfile
 phpize && ./configure --enable-xfile
 make && make install
-phpbrew ext enable xfile # if you use phpbrew
+```
+
+Install with phpbrew:
+
+```sh
+phpbrew ext install github:c9s/xfile
 ```
 
 Synopsis
