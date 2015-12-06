@@ -66,9 +66,7 @@ static const zend_function_entry xfile_functions[] = {
 
 
 zend_module_entry xfile_module_entry = {
-#if ZEND_MODULE_API_NO >= 20010901
     STANDARD_MODULE_HEADER,
-#endif
     PHP_XFILE_EXTNAME,
     xfile_functions,
     NULL,
@@ -76,9 +74,7 @@ zend_module_entry xfile_module_entry = {
     NULL,
     NULL,
     NULL,
-#if ZEND_MODULE_API_NO >= 20010901
     PHP_XFILE_VERSION,
-#endif
     STANDARD_MODULE_PROPERTIES
 };
 
