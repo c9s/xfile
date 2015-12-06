@@ -1,0 +1,18 @@
+{
+    "name": "corneltek\/xfile",
+    "description": "Fast File Utility Extension",
+    "authors": [
+        {
+            "name": "c9s",
+            "email": "yoanlin93@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "corneltek\/phpunit-testmore": "dev-master"
+    },
+    "autoload": {
+        "files": [ "xfile.php" ]
+    },
+    "extra": { "branch-alias": { "dev-master": "1.0.x-dev" } },
+    "license": "MIT"
+}
