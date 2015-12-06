@@ -26,51 +26,27 @@ int rmtree_iterator(zend_object_iterator *iter, void *puser TSRMLS_DC)
             break;
         case IS_OBJECT:
             if (instanceof_function(Z_OBJCE_PP(value), spl_ce_SplFileInfo TSRMLS_CC)) {
-
-                char *test = NULL;
                 zval dummy;
                 zend_bool is_dir = false;
                 spl_filesystem_object *intern = (spl_filesystem_object*)zend_object_store_get_object(*value TSRMLS_CC);
-
                 switch (intern->type) {
                     case SPL_FS_DIR:
                     case SPL_FS_FILE:
                     case SPL_FS_INFO:
-
                         php_stat(intern->file_name, intern->file_name_len, FS_IS_DIR, &dummy TSRMLS_CC);
                         is_dir = Z_BVAL(dummy);
-
-#if PHP_VERSION_ID >= 60000
-                        if (intern->file_name_type == IS_UNICODE) {
-                            zval zv;
-
-                            INIT_ZVAL(zv);
-                            Z_UNIVAL(zv) = intern->file_name;
-                            Z_UNILEN(zv) = intern->file_name_len;
-                            Z_TYPE(zv) = IS_UNICODE;
-
-                            zval_copy_ctor(&zv);
-                            zval_unicode_to_string(&zv TSRMLS_CC);
-                            fname = expand_filepath(Z_STRVAL(zv), NULL TSRMLS_CC);
-                            ezfree(Z_UNIVAL(zv));
-                        } else {
-                            fname = expand_filepath(intern->file_name.s, NULL TSRMLS_CC);
-                        }
-#else
                         fname = expand_filepath(intern->file_name, NULL TSRMLS_CC);
-#endif
-
                         if (!fname) {
                             zend_throw_exception_ex(spl_ce_UnexpectedValueException, 0 TSRMLS_CC, "Could not resolve file path");
                             return ZEND_HASH_APPLY_STOP;
                         }
-
-                        if ( is_dir ) {
+                        if (is_dir) {
                             php_stream_rmdir(fname, REPORT_ERRORS, NULL);
                         } else {
                             fname_len = strlen(fname);
                             unlink_file(fname, fname_len, NULL TSRMLS_CC);
                         }
+                        efree(fname);
                         return ZEND_HASH_APPLY_KEEP;
                 }
             }
@@ -130,7 +106,7 @@ zval *recursive_directory_iterator_create(char * dir, int dir_len, long options 
 //       RIT_SELF_FIRST  = 1,
 //       RIT_CHILD_FIRST = 2
 //   } RecursiveIteratorMode;
-zval *recursive_iterator_iterator_create(zval * iter, long options TSRMLS_DC)
+zval * recursive_iterator_iterator_create(zval * iter, long options TSRMLS_DC)
 {
     zval * iteriter;
     zval arg;
@@ -183,7 +159,7 @@ PHP_FUNCTION(xfile_rmtree)
         RETURN_FALSE;
     }
 
-    if ( is_file(dir,dir_len TSRMLS_CC) ) {
+    if (is_file(dir, dir_len TSRMLS_CC)) {
         unlink_file( dir, dir_len, NULL TSRMLS_CC );
         RETURN_TRUE;
     }
@@ -191,22 +167,29 @@ PHP_FUNCTION(xfile_rmtree)
     zval *iter;
     zval *iteriter;
 
-    if ( (iter = recursive_directory_iterator_create(dir, dir_len, SPL_FILE_DIR_SKIPDOTS|SPL_FILE_DIR_UNIXPATHS   TSRMLS_CC) ) == NULL )
+    if ((iter = recursive_directory_iterator_create(dir, dir_len, SPL_FILE_DIR_SKIPDOTS|SPL_FILE_DIR_UNIXPATHS   TSRMLS_CC) ) == NULL) {
         RETURN_FALSE;
-
-    if ( (iteriter = recursive_iterator_iterator_create(iter, RIT_CHILD_FIRST TSRMLS_CC)) == NULL )
+    }
+    if ((iteriter = recursive_iterator_iterator_create(iter, RIT_CHILD_FIRST TSRMLS_CC)) == NULL ) {
         RETURN_FALSE;
+    }
 
-    zval_ptr_dtor(&iter);
 
+
+    // PHPAPI int spl_iterator_apply(zval *obj, spl_iterator_apply_func_t apply_func, void *puser TSRMLS_DC)
     int pass = 0;
-
     if (SUCCESS == spl_iterator_apply(iteriter, (spl_iterator_apply_func_t) rmtree_iterator, (void *) &pass TSRMLS_CC)) {
-        if ( is_dir(dir,dir_len TSRMLS_CC) ) {
+        if (is_dir(dir,dir_len TSRMLS_CC) ) {
+            zval_ptr_dtor(&iter);
+            zval_ptr_dtor(&iteriter);
             RETURN_BOOL(php_stream_rmdir(dir, REPORT_ERRORS, NULL));
         }
+        zval_ptr_dtor(&iter);
+        zval_ptr_dtor(&iteriter);
         RETURN_TRUE;
     }
+    zval_ptr_dtor(&iter);
+    zval_ptr_dtor(&iteriter);
     RETURN_FALSE;
 }
 
