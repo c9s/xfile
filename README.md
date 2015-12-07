@@ -23,6 +23,12 @@ Install with phpbrew:
 phpbrew ext install github:c9s/xfile
 ```
 
+Install pure php version with composer:
+
+```sh
+composer require "corneltek/xfile" "1.0.x-dev"
+```
+
 Synopsis
 --------
 
