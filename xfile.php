@@ -241,8 +241,7 @@ function xfile_paths_filter_dir($paths)
     return $newpaths;
 }
 
-
-function xfile_replace_extension($filename, $newext)
+function xfile_ext_replace($filename, $newext)
 {
     $parts = explode('.',$filename);
     if (count($parts) > 1) {
@@ -252,13 +251,10 @@ function xfile_replace_extension($filename, $newext)
     return join('.',$parts);
 }
 
-
-function xfile_get_extension($filename)
+function xfile_ext($filename)
 {
     return pathinfo($filename, PATHINFO_EXTENSION);
 }
-
-
 
 function xfile_prettysize($bytes)
 {
